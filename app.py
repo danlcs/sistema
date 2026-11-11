@@ -6,12 +6,10 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.secret_key = 'chave_secreta_super_segura'
 
-# Configuração do Banco de Dados SQLite
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///clinica_veterinaria.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# --- MODELOS DO BANCO DE DADOS ---
 
 class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -22,7 +20,7 @@ class Usuario(db.Model):
 class Tutor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100), nullable=False)
-    cpf_criptografado = db.Column(db.String(64), nullable=False) # Armazenado em hash/criptografado
+    cpf_criptografado = db.Column(db.String(64), nullable=False) 
     pets = db.relationship('Pet', backref='tutor', lazy=True)
 
 class Pet(db.Model):
@@ -37,42 +35,35 @@ class Agendamento(db.Model):
     data_hora = db.Column(db.DateTime, nullable=False)
     pet_id = db.Column(db.Integer, db.ForeignKey('pet.id'), nullable=False)
 
-# Função auxiliar para criptografia simples do CPF (SHA-256)
 def criptografar_cpf(cpf):
     return hashlib.sha256(cpf.encode('utf-8')).hexdigest()
 
-# Inicialização e inserção dos 3 registros obrigatórios por tabela (Regra de Negócio)
 with app.app_context():
     db.create_all()
     if not Usuario.query.first():
-        # 1. Usuários do Sistema
         u1 = Usuario(nome="Dr. Carlos", username="carlos", senha="123")
         u2 = Usuario(nome="Dra. Ana", username="ana", senha="123")
         u3 = Usuario(nome="Atendente Mariana", username="mariana", senha="123")
         db.session.add_all([u1, u2, u3])
         
-        # 2. Tutores (CPFs convertidos em hash automaticamente)
         t1 = Tutor(nome="João Silva", cpf_criptografado=criptografar_cpf("11122233344"))
         t2 = Tutor(nome="Maria Souza", cpf_criptografado=criptografar_cpf("55566677788"))
         t3 = Tutor(nome="Pedro Santos", cpf_criptografado=criptografar_cpf("99900011122"))
         db.session.add_all([t1, t2, t3])
         db.session.commit()
 
-        # 3. Pets (Associados obrigatoriamente a um tutor)
         p1 = Pet(nome="Rex", especie="Cão", tutor_id=t1.id)
         p2 = Pet(nome="Mingau", especie="Gato", tutor_id=t2.id)
         p3 = Pet(nome="Thor", especie="Cão", tutor_id=t3.id)
         db.session.add_all([p1, p2, p3])
         db.session.commit()
 
-        # 4. Agendamentos
         a1 = Agendamento(data_hora=datetime(2026, 11, 15, 14, 0), pet_id=p1.id)
         a2 = Agendamento(data_hora=datetime(2026, 11, 12, 9, 30), pet_id=p2.id)
         a3 = Agendamento(data_hora=datetime(2026, 11, 12, 16, 0), pet_id=p3.id)
         db.session.add_all([a1, a2, a3])
         db.session.commit()
 
-# --- ROTAS DA APLICAÇÃO ---
 
 @app.route('/')
 def index():
@@ -104,7 +95,6 @@ def dashboard():
         return redirect(url_for('login'))
     return render_template('dashboard.html')
 
-# Módulo de Tutores: Busca, Listagem e Edição
 @app.route('/tutores', methods=['GET', 'POST'])
 def tutores():
     if 'user_id' not in session:
@@ -136,13 +126,11 @@ def editar_tutor(id):
     flash("Dados do tutor atualizados com sucesso!", "success")
     return redirect(url_for('tutores'))
 
-# Módulo de Agendamentos: Listagem Ordenada por Dia e Atualização de Data
 @app.route('/agendamentos', methods=['GET', 'POST'])
 def agendamentos():
     if 'user_id' not in session:
         return redirect(url_for('login'))
     
-    # Listagem ordenada por dia/data do agendamento
     lista_agendamentos = Agendamento.query.order_by(Agendamento.data_hora.asc()).all()
     return render_template('agendamentos.html', agendamentos=lista_agendamentos)
 
