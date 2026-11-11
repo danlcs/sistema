@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerenciar Agendamentos</title>
+    <link rel="stylesheet" href="https://jsdelivr.net">
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark px-3">
+        <a href="{{ url_for('dashboard') }}" class="navbar-brand">← Painel</a>
+        <span class="text-light">Usuário: <strong>{{ session['user_nome'] }}</strong></span>
+        <a href="{{ url_for('logout') }}" class="btn btn-sm btn-danger">Sair</a>
+    </nav>
+    <div class="container mt-4">
+        <h2>Lista de Agendamentos (Ordenado por Data)</h2>
+        <table class="table table-bordered mt-3">
+            <thead class="table-dark">
+                <tr>
+                    <th>Data e Hora</th>
+                    <th>Nome do Pet (Espécie)</th>
+                    <th>Nome do Tutor</th>
+                    <th>Alterar Data da Consulta</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for agendamento in agendamentos %}
+                <tr>
+                    <td>{{ agendamento.data_hora.strftime('%d/%m/%Y %H:%M') }}</td>
+                    <td>{{ agendamento.pet.nome }} ({{ agendamento.pet.especie }})</td>
+                    <td>{{ agendamento.pet.tutor.nome }}</td>
+                    <td>
+                        <!-- Formulário para atualizar data do agendamento -->
+                        <form action="{{ url_for('atualizar_agendamento', id=agendamento.id) }}" method="POST" class="row g-1">
+                            <div class="col-auto">
+                                <input type="datetime-local" name="nova_data" class="form-control form-control-sm" required>
+                            </div>
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-sm btn-primary">Atualizar</button>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
