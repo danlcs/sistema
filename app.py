@@ -113,18 +113,24 @@ def editar_tutor(id):
     if 'user_id' not in session:
         return redirect(url_for('login'))
     
-    tutor = Tutor.query.get_or_create(id=id)[0]
-    novo_nome = request.form.get('nome')
-    novo_cpf = request.form.get('cpf')
+    tutor = Tutor.query.get(id)
     
-    if novo_nome:
-        tutor.nome = novo_nome
-    if novo_cpf:
-        tutor.cpf_criptografado = criptografar_cpf(novo_cpf)
+    if tutor:
+        novo_nome = request.form.get('nome')
+        novo_cpf = request.form.get('cpf')
         
-    db.session.commit()
-    flash("Dados do tutor atualizados com sucesso!", "success")
+        if novo_nome:
+            tutor.nome = novo_nome
+        if novo_cpf:
+            tutor.cpf_criptografado = criptografar_cpf(novo_cpf)
+            
+        db.session.commit()
+        flash("Dados do tutor atualizados com sucesso!", "success")
+    else:
+        flash("Tutor não encontrado.", "danger")
+        
     return redirect(url_for('tutores'))
+
 
 @app.route('/agendamentos', methods=['GET', 'POST'])
 def agendamentos():
