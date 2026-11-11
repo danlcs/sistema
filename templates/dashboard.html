@@ -2,21 +2,21 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Painel - Clinica Vet</title>
-    <link rel="stylesheet" href="https://jsdelivr.net">
+    <title>Painel - Clínica Vet</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-dark px-3">
+    <nav class="navbar">
         <span class="navbar-brand">SENAI Veterinária</span>
-        <span class="text-light">Usuário: <strong>{{ session['user_nome'] }}</strong></span>
-        <a href="{{ url_for('logout') }}" class="btn btn-sm btn-danger">Sair do Sistema</a>
+        <span>Usuário: <strong>{{ session['user_nome'] }}</strong></span>
+        <a href="{{ url_for('logout') }}" class="btn btn-danger">Sair do Sistema</a>
     </nav>
     <div class="container mt-5 text-center">
         <h1>Bem-vindo ao Sistema de Atendimento</h1>
         <p class="text-muted">Selecione uma das opções abaixo para gerenciar a clínica:</p>
-        <div class="mt-4">
-            <a href="{{ url_for('tutores') }}" class="btn btn-primary btn-lg mx-2">Gerenciar Tutores</a>
-            <a href="{{ url_for('agendamentos') }}" class="btn btn-success btn-lg mx-2">Gerenciar Agendamentos</a>
+        <div class="dashboard-actions">
+            <a href="{{ url_for('tutores') }}" class="btn btn-primary btn-lg">Gerenciar Tutores</a>
+            <a href="{{ url_for('agendamentos') }}" class="btn btn-success btn-lg">Gerenciar Agendamentos</a>
         </div>
     </div>
 </body>

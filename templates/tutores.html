@@ -3,54 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <title>Gerenciar Tutores</title>
-    <link rel="stylesheet" href="https://jsdelivr.net">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-dark px-3">
+    <nav class="navbar">
         <a href="{{ url_for('dashboard') }}" class="navbar-brand">← Painel</a>
-        <span class="text-light">Usuário: <strong>{{ session['user_nome'] }}</strong></span>
-        <a href="{{ url_for('logout') }}" class="btn btn-sm btn-danger">Sair</a>
+        <span>Usuário: <strong>{{ session['user_nome'] }}</strong></span>
+        <a href="{{ url_for('logout') }}" class="btn btn-danger">Sair</a>
     </nav>
     <div class="container mt-4">
         <h2>Módulo de Tutores</h2>
         
-        
-        <form method="GET" class="row g-2 my-3">
-            <div class="col-auto">
-                <input type="text" name="busca" class="form-control" placeholder="Buscar tutor por nome..." value="{{ busca }}">
-            </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-secondary">Buscar</button>
-            </div>
+        <form method="GET" class="form-inline mt-4">
+            <input type="text" name="busca" class="form-control" style="width: auto; min-width: 250px;" placeholder="Buscar tutor por nome..." value="{{ busca }}">
+            <button type="submit" class="btn btn-secondary">Buscar</button>
         </form>
 
-        <table class="table table-striped mt-3">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nome</th>
-                    <th>Hash do CPF (Protegido)</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for tutor in tutores %}
-                <tr>
-                    <td>{{ tutor.id }}</td>
-                    <td>{{ tutor.nome }}</td>
-                    <td class="text-truncate" style="max-width: 150px;">{{ tutor.cpf_criptografado }}</td>
-                    <td>
-                        
-                        <form action="{{ url_for('editar_tutor', id=tutor.id) }}" method="POST" class="d-inline row g-1">
-                            <div class="col-auto"><input type="text" name="nome" placeholder="Novo nome" class="form-control form-control-sm"></div>
-                            <div class="col-auto"><input type="text" name="cpf" placeholder="Novo CPF" class="form-control form-control-sm"></div>
-                            <div class="col-auto"><button type="submit" class="btn btn-sm btn-warning">Salvar</button></div>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-container">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Hash do CPF (Protegido)</th>
+                        <th>Alterar Dados (Nome / CPF)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tutor in tutores %}
+                    <tr>
+                        <td>{{ tutor.id }}</td>
+                        <td>{{ tutor.nome }}</td>
+                        <td class="text-truncate">{{ tutor.cpf_criptografado }}</td>
+                        <td>
+                            <form action="{{ url_for('editar_tutor', id=tutor.id) }}" method="POST" class="form-inline">
+                                <input type="text" name="nome" placeholder="Novo nome" class="form-control" style="padding: 4px 8px; font-size: 0.85rem; width: 130px;">
+                                <input type="text" name="cpf" placeholder="Novo CPF" class="form-control" style="padding: 4px 8px; font-size: 0.85rem; width: 130px;">
+                                <button type="submit" class="btn btn-warning" style="padding: 4px 10px; font-size: 0.85rem;">Salvar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </body>
 </html>
