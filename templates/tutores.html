@@ -14,7 +14,7 @@
     <div class="container mt-4">
         <h2>Módulo de Tutores</h2>
         
-        <!-- Formulário de Busca por termo -->
+        
         <form method="GET" class="row g-2 my-3">
             <div class="col-auto">
                 <input type="text" name="busca" class="form-control" placeholder="Buscar tutor por nome..." value="{{ busca }}">
@@ -40,7 +40,7 @@
                     <td>{{ tutor.nome }}</td>
                     <td class="text-truncate" style="max-width: 150px;">{{ tutor.cpf_criptografado }}</td>
                     <td>
-                        <!-- Formulário de edição rápida em linha -->
+                        
                         <form action="{{ url_for('editar_tutor', id=tutor.id) }}" method="POST" class="d-inline row g-1">
                             <div class="col-auto"><input type="text" name="nome" placeholder="Novo nome" class="form-control form-control-sm"></div>
                             <div class="col-auto"><input type="text" name="cpf" placeholder="Novo CPF" class="form-control form-control-sm"></div>
